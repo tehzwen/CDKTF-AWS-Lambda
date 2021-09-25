@@ -1,5 +1,5 @@
 import { Construct } from "constructs";
-import { Resource } from "cdktf";
+import { Resource, TerraformOutput } from "cdktf";
 import {
   Apigatewayv2Api,
   Apigatewayv2Deployment,
@@ -55,15 +55,27 @@ class ApiGatewayConstruct extends Resource {
   }
 
   public addStage(props: { name: string, autoDeploy?: boolean }): Apigatewayv2Stage {
+    const auto = props.autoDeploy ?? true;
+
     const stage = new Apigatewayv2Stage(
       this,
       `${props.name}-resource`,
       {
         apiId: this._api.id,
         name: `${props.name}`,
-        autoDeploy: props.autoDeploy ?? true
+        autoDeploy: auto
       }
     );
+
+    if (auto) {
+      new TerraformOutput(
+        this,
+        `${props.name}-stage-output`,
+        {
+          value: stage.invokeUrl
+        }
+      );
+    }
 
     return stage;
   }
