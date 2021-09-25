@@ -1,12 +1,6 @@
 import { App } from "cdktf";
-import LambdaStack from "./lambda-stack";
+import LambdaStack from "./src/lambda-stack";
 
 const app = new App();
-new LambdaStack(app, "cdktf-test", {
-  path: "/handlers/testHandler",
-  functionName: 'TestLambda',
-  timeout: 90,
-  handler: 'index.handler',
-  runtime: 'nodejs14.x'
-});
+new LambdaStack(app, "cdktf-test");
 app.synth();
